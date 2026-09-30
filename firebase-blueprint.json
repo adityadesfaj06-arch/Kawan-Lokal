@@ -1,0 +1,162 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User account profile and personal contact information",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Firebase Auth UID of the user",
+          "maxLength": 128
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Full name of the user",
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the user",
+          "maxLength": 150
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "WhatsApp or mobile contact number",
+          "maxLength": 25
+        },
+        "favoriteCategory": {
+          "type": "string",
+          "description": "Favorite snack category (e.g. Pedas, Gurih)",
+          "maxLength": 50
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": ["userId", "displayName", "email"]
+    },
+    "UserAddress": {
+      "title": "UserAddress",
+      "description": "Saved delivery address for fast checkout",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the address",
+          "maxLength": 64
+        },
+        "userId": {
+          "type": "string",
+          "description": "Firebase Auth UID owner of this address",
+          "maxLength": 128
+        },
+        "label": {
+          "type": "string",
+          "description": "Address label such as Rumah, Kantor, or Kost",
+          "maxLength": 40
+        },
+        "recipientName": {
+          "type": "string",
+          "description": "Name of the recipient",
+          "maxLength": 100
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "WhatsApp or mobile number for delivery",
+          "maxLength": 25
+        },
+        "street": {
+          "type": "string",
+          "description": "Complete street address, RT/RW, building, or unit",
+          "maxLength": 300
+        },
+        "city": {
+          "type": "string",
+          "description": "City or regency name",
+          "maxLength": 80
+        },
+        "postalCode": {
+          "type": "string",
+          "description": "5-digit postal code",
+          "maxLength": 10
+        },
+        "notes": {
+          "type": "string",
+          "description": "Courier delivery notes or landmark",
+          "maxLength": 200
+        },
+        "isDefault": {
+          "type": "boolean",
+          "description": "Whether this address is set as the primary checkout default"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp"
+        }
+      },
+      "required": ["id", "userId", "label", "recipientName", "phoneNumber", "street", "city", "postalCode"]
+    },
+    "UserOrder": {
+      "title": "UserOrder",
+      "description": "Saved checkout orders for history",
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string",
+          "description": "Unique order reference code",
+          "maxLength": 64
+        },
+        "userId": {
+          "type": "string",
+          "description": "Auth UID of the ordering customer",
+          "maxLength": 128
+        },
+        "date": {
+          "type": "string",
+          "description": "Date string of the order",
+          "maxLength": 50
+        },
+        "customerName": {
+          "type": "string",
+          "description": "Name on order",
+          "maxLength": 100
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone number",
+          "maxLength": 25
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "Payment method used",
+          "maxLength": 80
+        },
+        "total": {
+          "type": "number",
+          "description": "Total amount paid in IDR"
+        }
+      },
+      "required": ["orderId", "userId", "customerName", "phone", "paymentMethod", "total"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile document storing personal information and settings"
+    },
+    "/users/{userId}/addresses/{addressId}": {
+      "schema": "UserAddress",
+      "description": "User saved delivery addresses collection"
+    },
+    "/users/{userId}/orders/{orderId}": {
+      "schema": "UserOrder",
+      "description": "User order history collection"
+    }
+  }
+}

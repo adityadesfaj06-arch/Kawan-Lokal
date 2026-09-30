@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 340" width="100%" height="100%">
+  <!-- Defs for subtle organic filter or styling -->
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&amp;family=Comfortaa:wght@700&amp;display=swap');
+      .logo-title {
+        font-family: 'Fredoka', 'Comfortaa', 'Nunito', 'Baloo 2', system-ui, sans-serif;
+        font-weight: 700;
+        fill: #54382B;
+      }
+    </style>
+  </defs>
+
+  <!-- Roof shape -->
+  <path d="M 148 108 C 172 102, 195 82, 204 66 C 213 82, 236 102, 256 108" 
+        fill="none" 
+        stroke="#CA9344" 
+        stroke-width="9.5" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" />
+
+  <!-- 4 Window dots (2x2 grid) -->
+  <rect x="190" y="104" width="9" height="9" rx="2.5" fill="#CA9344" />
+  <rect x="205" y="104" width="9" height="9" rx="2.5" fill="#CA9344" />
+  <rect x="190" y="119" width="9" height="9" rx="2.5" fill="#CA9344" />
+  <rect x="205" y="119" width="9" height="9" rx="2.5" fill="#CA9344" />
+
+  <!-- Text "Kawan" -->
+  <text x="200" y="185" text-anchor="middle" class="logo-title" font-size="68" letter-spacing="-1">Kawan</text>
+
+  <!-- Text "Lokal" -->
+  <text x="180" y="248" text-anchor="middle" class="logo-title" font-size="70" letter-spacing="-1">Lokal</text>
+
+  <!-- Green Leaves on the right -->
+  <!-- Top Leaf -->
+  <path d="M 285 162 C 304 164, 308 185, 287 194 C 283 183, 281 171, 285 162 Z" 
+        fill="#637848" />
+  <!-- Bottom Leaf -->
+  <path d="M 281 200 C 310 200, 310 216, 283 218 C 281 210, 279 204, 281 200 Z" 
+        fill="#637848" />
+
+  <!-- Green curved underline stroke -->
+  <path d="M 142 270 C 185 258, 230 252, 268 250" 
+        fill="none" 
+        stroke="#637848" 
+        stroke-width="7" 
+        stroke-linecap="round" />
+</svg>

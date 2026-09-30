@@ -1,0 +1,6 @@
+{
+  "name": "KAWAN LOKAL",
+  "description": "Toko resmi Kawan Lokal: Jajanan viral TikTok, aneka seblak cuanki basreng, dan bubuk minuman kekinian siap seduh.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

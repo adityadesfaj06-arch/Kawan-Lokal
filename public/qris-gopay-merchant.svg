@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 840" width="600" height="840" style="background:#00AEEF; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Cyan Background -->
+  <rect width="600" height="840" fill="#00AEEF"/>
+
+  <!-- Top Header Gopay Merchant -->
+  <g transform="translate(60, 45)">
+    <!-- Gopay Icon -->
+    <rect x="0" y="0" width="46" height="42" rx="14" fill="#FFFFFF"/>
+    <circle cx="23" cy="21" r="7" fill="#00AEEF"/>
+    <!-- Gopay Merchant Text -->
+    <text x="60" y="32" fill="#FFFFFF" font-size="36" font-weight="900" letter-spacing="-0.5">gopay<tspan font-weight="400"> merchant</tspan></text>
+  </g>
+
+  <!-- Main White Card -->
+  <g filter="url(#cardShadow)">
+    <rect x="44" y="115" width="512" height="630" rx="36" fill="#FFFFFF"/>
+    
+    <!-- Red Decorative Corner Triangles -->
+    <!-- Top-Left Inner Accent -->
+    <polygon points="44,200 44,280 120,200" fill="#E41B26"/>
+    <!-- Bottom-Right Inner Accent -->
+    <polygon points="556,580 556,660 480,660" fill="#E41B26"/>
+
+    <!-- QRIS Logo Top Left -->
+    <g transform="translate(74, 145)">
+      <text x="0" y="24" fill="#0C1428" font-size="28" font-weight="900" letter-spacing="1">QRIS</text>
+      <text x="75" y="12" fill="#0C1428" font-size="9" font-weight="700">QR Code Standar</text>
+      <text x="75" y="23" fill="#0C1428" font-size="9" font-weight="700">Pembayaran Nasional</text>
+      <line x1="0" y1="30" x2="65" y2="30" stroke="#E41B26" stroke-width="2.5"/>
+    </g>
+
+    <!-- GPN Logo Top Right -->
+    <g transform="translate(460, 140)">
+      <!-- Stylized Bird Wing -->
+      <path d="M 12 18 C 18 10, 32 4, 38 0 C 34 8, 30 16, 26 22 C 34 16, 42 12, 46 8 C 42 16, 36 24, 28 28 C 36 26, 42 26, 44 24 C 36 30, 24 34, 14 30 Z" fill="#E41B26"/>
+      <text x="8" y="44" fill="#1B2B65" font-size="14" font-weight="900" letter-spacing="1">GPN</text>
+    </g>
+
+    <!-- Merchant Name -->
+    <text x="300" y="215" text-anchor="middle" fill="#14181F" font-size="14.5" font-weight="800" letter-spacing="0.2">
+      EDGARD FANS SIMAHENDALI, KESEHATAN &amp; OLAHRAGA
+    </text>
+
+    <!-- NMID -->
+    <text x="300" y="238" text-anchor="middle" fill="#3D4451" font-size="13" font-weight="700" letter-spacing="0.8">
+      NMID: ID1026543831071
+    </text>
+
+    <!-- Terminal Code -->
+    <text x="300" y="266" text-anchor="middle" fill="#14181F" font-size="13" font-weight="800">
+      A01
+    </text>
+
+    <!-- QR Code Image -->
+    <image href="data:image/png;base64,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" x="120" y="280" width="360" height="360"/>
+
+    <!-- Printed By / Dicetak Oleh -->
+    <text x="130" y="660" fill="#2B303A" font-size="12" font-weight="700">
+      Dicetak oleh: 93600914
+    </text>
+  </g>
+
+  <!-- Bottom Bar: Terima Pembayaran QRIS dari mana saja -->
+  <g transform="translate(0, 755)">
+    <text x="300" y="20" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="700">
+      Terima pembayaran QRIS dari mana saja
+    </text>
+    <g transform="translate(50, 32)">
+      <!-- Gopay pill -->
+      <rect x="0" y="4" width="70" height="22" rx="5" fill="#FFFFFF"/>
+      <text x="35" y="19" text-anchor="middle" fill="#00AEEF" font-size="12" font-weight="900">gopay</text>
+
+      <!-- BCA pill -->
+      <rect x="80" y="4" width="55" height="22" rx="5" fill="#003580"/>
+      <text x="107" y="19" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="800">BCA</text>
+
+      <!-- Mandiri pill -->
+      <rect x="145" y="4" width="70" height="22" rx="5" fill="#0B3C73"/>
+      <text x="180" y="19" text-anchor="middle" fill="#FDB813" font-size="12" font-weight="800">mandiri</text>
+
+      <!-- BNI pill -->
+      <rect x="225" y="4" width="50" height="22" rx="5" fill="#F15A24"/>
+      <text x="250" y="19" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="800">BNI</text>
+
+      <!-- BRI pill -->
+      <rect x="285" y="4" width="75" height="22" rx="5" fill="#00529C"/>
+      <text x="322" y="19" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="800">BANK BRI</text>
+
+      <!-- dan bank lainnya -->
+      <text x="370" y="20" fill="#FFFFFF" font-size="12" font-weight="600">dan bank lainnya</text>
+    </g>
+  </g>
+</svg>

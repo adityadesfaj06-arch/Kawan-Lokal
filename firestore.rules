@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // User profile document
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create, update: if isOwner(userId) &&
+        request.resource.data.userId == userId &&
+        request.resource.data.displayName is string &&
+        request.resource.data.displayName.size() <= 100 &&
+        request.resource.data.email is string &&
+        request.resource.data.email.size() <= 150;
+      allow delete: if false;
+
+      // Saved delivery addresses subcollection
+      match /addresses/{addressId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId) &&
+          request.resource.data.userId == userId &&
+          request.resource.data.label is string &&
+          request.resource.data.recipientName is string &&
+          request.resource.data.phoneNumber is string &&
+          request.resource.data.street is string &&
+          request.resource.data.city is string &&
+          request.resource.data.postalCode is string;
+        allow delete: if isOwner(userId);
+      }
+
+      // Order history subcollection
+      match /orders/{orderId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) &&
+          request.resource.data.userId == userId &&
+          request.resource.data.orderId is string &&
+          request.resource.data.total is number;
+        allow update, delete: if false;
+      }
+    }
+  }
+}
