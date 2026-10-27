@@ -1,14 +1,15 @@
-export type ProductCategory = 
-  | 'Latiao Viral' 
-  | 'Cuanki & Baso Aci' 
-  | 'Cimol Bojot' 
-  | 'Basreng Crispy' 
-  | 'Seblak Viral' 
+export type ProductCategory =
+  | 'Latiao Viral'
+  | 'Cuanki & Baso Aci'
+  | 'Cimol Bojot'
+  | 'Basreng Crispy'
+  | 'Seblak Viral'
   | 'Cemilan Gurih'
   | 'Bubuk Minuman'
   | 'Bakery & Cookies'
-  | 'Spicy' 
-  | 'Viral Picks';
+  | 'Spicy'
+  | 'Viral Picks'
+  | (string & {});
 
 export interface ArticleSection {
   heading?: string;
@@ -102,6 +103,21 @@ export interface Product {
   servingsPerPack?: string;
   brewingInstructions?: string[];
   bestServedWith?: string;
+  isAiGenerated?: boolean;
+  aiReasonViral?: string;
+  imagePrompt?: string;
+  isAiDiscovered?: boolean;
+}
+
+export interface AiDiscoveredProduct {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  description: string;
+  badge: string; // '✨ Baru & Viral'
+  imagePrompt: string;
+  dateAdded?: string;
 }
 
 export interface CartItem {
@@ -170,25 +186,36 @@ export interface UserProfileData {
 
 export interface TrendingArticle {
   judul: string;
-  ringkasan_singkat: string;
   kategori: string;
+  tanggal_hari_ini: string; // e.g. "27 Oktober 2026"
+  ringkasan: string;
+  ringkasan_singkat?: string; // for backward compatibility
+  isi_artikel_lengkap: string;
   waktu_baca: string;
+  imageKeyword?: string;
+  image_keyword?: string;
+  imageUrl?: string;
 }
 
 export interface NewMenuItem {
+  id?: string;
   nama_menu: string;
   deskripsi_menggugah_selera: string;
   kategori: string;
   estimasi_harga_rupiah: number;
   alasan_populer: string;
-  badge?: '🔥 Trending' | '✨ Menu Baru';
+  badge?: string; // '✨ Baru & Viral'
+  image?: string;
+  image_keyword?: string;
+  imageKeyword?: string;
+  imageUrl?: string;
 }
 
 export interface AiTrendsData {
   trending_articles: TrendingArticle[];
   new_menus: NewMenuItem[];
+  auto_discovered_products?: AiDiscoveredProduct[];
   grounded?: boolean;
+  date_key?: string; // YYYY-MM-DD
   last_updated: string;
 }
-
-

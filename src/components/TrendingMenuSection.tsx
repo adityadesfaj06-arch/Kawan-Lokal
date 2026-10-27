@@ -1,10 +1,11 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Sparkles, Flame, ShoppingBag, Lightbulb, ChefHat, Check } from 'lucide-react';
+import { Sparkles, ShoppingBag, Lightbulb } from 'lucide-react';
 import { useAiTrends } from '../context/AiTrendsContext';
 import { useCart } from '../context/CartContext';
 import { formatRupiah } from '../lib/utils';
 import { NewMenuItem } from '../types';
+import { SafeImage } from './SafeImage';
 
 export const TrendingMenuSection: React.FC = () => {
   const { menus, loading, isRefreshing } = useAiTrends();
@@ -45,16 +46,17 @@ export const TrendingMenuSection: React.FC = () => {
           Array.from({ length: 3 }).map((_, idx) => (
             <div
               key={idx}
-              className="p-6 rounded-[32px] bg-[#FFFDF8] border border-[#D9C7AE]/60 shadow-sm animate-pulse flex flex-col justify-between h-[340px]"
+              className="p-5 sm:p-6 rounded-[32px] bg-[#FFFDF8] border border-[#D9C7AE]/60 shadow-sm animate-pulse flex flex-col justify-between"
             >
               <div>
-                <div className="flex justify-between items-center mb-4">
+                <div className="w-full aspect-[16/10] bg-gradient-to-r from-[#EADDCC]/70 via-[#F8F5EF] to-[#EADDCC]/70 rounded-2xl mb-4" />
+                <div className="flex justify-between items-center mb-3">
                   <div className="w-24 h-6 bg-[#EADDCC]/60 rounded-full" />
                   <div className="w-20 h-5 bg-[#EADDCC]/50 rounded-full" />
                 </div>
                 <div className="w-3/4 h-7 bg-[#EADDCC]/70 rounded-xl mb-3" />
                 <div className="w-full h-4 bg-[#EADDCC]/40 rounded-lg mb-2" />
-                <div className="w-5/6 h-4 bg-[#EADDCC]/40 rounded-lg mb-5" />
+                <div className="w-5/6 h-4 bg-[#EADDCC]/40 rounded-lg mb-4" />
                 <div className="w-full h-16 bg-[#EADDCC]/30 rounded-2xl mb-4" />
               </div>
               <div className="flex justify-between items-center pt-4 border-t border-[#EADDCC]/40">
@@ -66,29 +68,53 @@ export const TrendingMenuSection: React.FC = () => {
         ) : (
           menus.map((item: NewMenuItem, idx: number) => {
             const isTrending = (item.badge || '').includes('Trending');
+            const fallbackCategory = item.kategori?.toLowerCase().includes('minuman')
+              ? 'beverage'
+              : item.nama_menu?.toLowerCase().includes('seblak')
+              ? 'seblak'
+              : 'basreng';
             return (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1, duration: 0.35 }}
-                className="p-6 sm:p-7 rounded-[32px] bg-[#FFFDF8] border border-[#D9C7AE]/60 hover:border-[#E85D32] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
+                className="p-5 sm:p-6 rounded-[32px] bg-[#FFFDF8] border border-[#D9C7AE]/60 hover:border-[#E85D32] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
               >
-                {/* Top Badge & Category */}
                 <div>
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span
-                      className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                        isTrending
-                          ? 'bg-[#E85D32] text-white shadow-sm'
-                          : 'bg-[#6D8B57] text-white shadow-sm'
-                      }`}
-                    >
-                      {item.badge || '🔥 Trending'}
-                    </span>
+                  {/* Menu Image with 16:10 Cinematic Aspect Ratio */}
+                  <div className="relative mb-4 overflow-hidden rounded-2xl shadow-sm">
+                    <SafeImage
+                      src={item.imageUrl}
+                      alt={item.nama_menu}
+                      aspectRatio="16/10"
+                      fallbackCategory={fallbackCategory}
+                      className="w-full rounded-2xl"
+                      imageClassName="group-hover:scale-105 transition-transform duration-500 ease-out"
+                    />
+                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+                      <span
+                        className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider backdrop-blur-sm ${
+                          isTrending
+                            ? 'bg-[#E85D32]/90 text-white shadow-sm'
+                            : 'bg-[#6D8B57]/90 text-white shadow-sm'
+                        }`}
+                      >
+                        {item.badge || '🔥 Trending'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Category & AI Keyword Tag */}
+                  <div className="flex items-center justify-between gap-2 mb-2.5">
                     <span className="text-[11px] font-bold text-[#6B5546] bg-[#F8F5EF] px-2.5 py-0.5 rounded-full border border-[#D9C7AE]/40 truncate max-w-[140px]">
                       {item.kategori}
                     </span>
+                    {item.image_keyword && (
+                      <span className="text-[9px] text-[#CA9344] font-medium hidden sm:inline">
+                        ✨ Foto AI Relevan
+                      </span>
+                    )}
                   </div>
 
                   {/* Menu Name */}

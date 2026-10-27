@@ -24,6 +24,7 @@ import { BrewingGuide } from './BrewingGuide';
 import { BrandLogo } from './BrandLogo';
 import { PRODUCTS } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useAiTrends } from '../context/AiTrendsContext';
 
 interface ProductDetailProps {
   slug: string;
@@ -31,7 +32,12 @@ interface ProductDetailProps {
 
 export const ProductDetail: React.FC<ProductDetailProps> = ({ slug }) => {
   const { navigate, addToCart, showToast } = useCart();
-  const product = PRODUCTS.find((p) => p.slug === slug) || PRODUCTS[0];
+  const aiContext = useAiTrends();
+  const sourceProducts = aiContext?.injectedProducts || aiContext?.products;
+  const productList = Array.isArray(sourceProducts) && sourceProducts.length > 0
+    ? sourceProducts
+    : PRODUCTS;
+  const product = productList.find((p) => p.slug === slug) || productList[0] || PRODUCTS[0];
 
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(product.variants[0]);
   const [selectedPackage, setSelectedPackage] = useState<PackageOption>(product.packageOptions[0]);

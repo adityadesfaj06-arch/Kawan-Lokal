@@ -1,13 +1,18 @@
 import React from 'react';
 import { ArrowRight, Flame, Sparkles } from 'lucide-react';
-import { PRODUCTS } from '../data/products';
 import { ProductCard } from './ProductCard';
 import { useCart } from '../context/CartContext';
+import { useAiTrends } from '../context/AiTrendsContext';
+import { PRODUCTS } from '../data/products';
 
 export const TrendingSection: React.FC = () => {
   const { navigate } = useCart();
-  // Grab top trending products
-  const trendingProducts = PRODUCTS.slice(0, 4);
+  const aiContext = useAiTrends();
+  const sourceProducts = aiContext?.injectedProducts || aiContext?.products;
+  const trendingList = Array.isArray(sourceProducts) && sourceProducts.length > 0
+    ? sourceProducts
+    : PRODUCTS;
+  const trendingProducts = trendingList.slice(0, 6);
 
   return (
     <section id="trending" className="py-14 sm:py-20 max-w-[1440px] mx-auto px-4 sm:px-6 md:px-8">

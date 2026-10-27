@@ -1,121 +1,99 @@
-# Integrasi Tren Kuliner Real-Time & Generator Menu Baru Gemini AI
+# Rencana Implementasi: Gambar Artikel Unik & Auto-Discovery Katalog Produk Dinamis
 
-Menambahkan dua fitur dinamis berbasis kecerdasan buatan (*AI-powered*) yang ditenagai oleh **Gemini API (`gemini-3.8-flash`)** dengan **Google Search Grounding**:
-1. **Section Artikel & Tren Real-Time**: Menyajikan berita & tren jajanan kuliner viral terkini di Indonesia dengan tombol refresh dan auto-fetch.
-2. **Generator Menu Baru Otomatis (Trending Menu)**: Rekomendasi 2-3 ide produk/menu baru viral mingguan yang langsung dapat dipesan atau dimasukkan ke keranjang dengan label eksklusif.
-3. **Mekanisme Caching 24 Jam di `localStorage`**: Mencegah kuota API terkuras dan memastikan kecepatan muat halaman instan, hanya me-refresh otomatis sehari sekali atau saat pengguna menekan tombol *Refresh Update Terbaru*.
-
----
-
-## User Review & Critical Decisions
-
-> [!IMPORTANT]
-> **Keputusan Utama & Penyelarasan**:
-> - **Model AI**: Menggunakan `gemini-3.8-flash` dengan alat bawaan `tools: [{ googleSearch: {} }]` untuk mendapatkan tren kuliner internet Indonesia yang aktual dan akurat, tanpa memerlukan API key berbayar.
-> - **Keamanan API Key**: Sesuai standar AI Studio, panggilan Gemini API diisolasi di endpoint backend (`/api/trends`) menggunakan Express server (`server.ts`) sehingga `GEMINI_API_KEY` tidak terekspos di browser client.
-> - **Interaktivitas Menu Baru**: Rekomendasi menu baru dilengkapi tombol *"Pesan Menu Ini / Tambah ke Keranjang"* sehingga pengunjung dapat langsung merasakan alur belanja nyata hingga checkout.
-> - **Penempatan UI**: Seksi *Tren & Artikel Real-time* diletakkan di halaman utama (Beranda) tepat di atas katalog produk dan terhubung ke halaman `/articles`, sedangkan *Trending Menu Baru Minggu Ini* ditempatkan secara terintegrasi di bagian atas katalog menu produk.
+Peningkatan menyeluruh untuk memastikan:
+1. Setiap kartu artikel dinamis memiliki gambar yang 100% akurat dan unik sesuai judulnya (tanpa duplikasi) menggunakan keyword visual spesifik, parameter `&seed=${index}`, dan kontainer tinggi 200px proporsional.
+2. Katalog Produk dan Filter Kategori bekerja 100% dinamis (Auto-Discovery & Auto-Inject) menggunakan Gemini 2.5 Flash dengan Google Search grounding, generator foto `imagePrompt` dengan seed unik, tab kategori otomatis bertambah dinamis, dan persistensi `localStorage` harian.
 
 ---
 
-## 1. Overview & Core Concept
-
-- **Apa yang Dikerjakan**:
-  - Backend proxy route `/api/trends` yang memanggil Google Gen AI SDK dengan model `gemini-3.8-flash` dan Search Grounding.
-  - Komponen **Section Tren Real-Time** (`RealtimeTrendsSection.tsx`) menampilkan 3 artikel tren viral kuliner nusantara (judul, ringkasan, kategori, estimasi waktu baca, serta badge indikator *Verified with Google Search*).
-  - Komponen **Trending Menu Baru** (`TrendingMenuSection.tsx`) menampilkan 2-3 kreasi jajanan viral baru (nama produk, deskripsi menggugah selera, estimasi harga IDR, alasan viral, badge `🔥 Trending` / `✨ Menu Baru`, dan aksi belanja).
-  - Indikator waktu pembaruan terakhir (*"Diperbarui 10 menit lalu"*) dan tombol interaktif *"⚡ Refresh Update Terbaru"* dengan status animasi putar.
-  - Animasi skeleton loading yang anggun dan berkelas saat AI memproses data.
-
-- **Target Persona & Nilai**:
-  - Penggemar camilan lokal dan pemilik usaha kuliner yang ingin selalu mengetahui jajanan yang sedang viral di TikTok/Instagram/X di Indonesia secara real-time.
+## 1. Konfirmasi Preferensi Pengguna (User Answers)
+- **Urutan Tab Kategori**: Urutan abjad setelah tab 'Semua' lengkap dengan badge penghitung jumlah item per kategori.
+- **Waktu Eksekusi Auto-Inject**: Otomatis saat pergantian hari kalender baru (`YYYY-MM-DD`) saat website pertama kali dibuka, serta tombol refresh manual untuk memaksa pencarian tren baru kapan saja.
+- **Bentuk Notifikasi**: Toast notifikasi interaktif saat produk baru berhasil ditambahkan, ditambah badge indikator jumlah produk baru di header katalog produk.
 
 ---
 
-## 2. User Experience & Visual Design
+## 2. Arsitektur & Spesifikasi Teknis
 
-- **Alur Pengguna (User Flow)**:
-  1. Pengunjung membuka website: Sistem memeriksa `localStorage` (`kawanlokal_trends_cache`). Jika ada data dan usianya belum 24 jam, konten langsung ditampilkan secara instan tanpa jeda loading.
-  2. Jika cache kosong atau sudah kedaluwarsa (> 24 jam), sistem otomatis menjalankan skeleton loading dan mengambil update terbaru via Gemini API + Google Search.
-  3. Pengguna dapat menekan tombol *"Refresh Update Terbaru"* kapan saja untuk memaksa pembaruan data real-time dengan efek toast konfirmasi.
-  4. Pada kartu Menu Baru, pengunjung dapat mengklik tombol *"Coba Menu Ini"* untuk langsung menambahkan produk ke keranjang belanja dengan estimasi harga resmi.
+### A. Komponen Artikel Dinamis & Generator Gambar Akurat
+- **Keyword Visual Spesifik**:
+  - Artikel Basreng: `"indonesian spicy basreng chips with lime leaves daun jeruk"`
+  - Artikel Thai Tea & Matcha: `"iced thai tea and matcha latte on cafe table"`
+  - Artikel Seblak & Baso Aci: `"indonesian spicy seblak and baso aci in a bowl with ceker"`
+  - Artikel dinamis AI lainnya: AI mewajibkan properti `imageKeyword` spesifik dalam bahasa Inggris.
+- **URL Generator Gambar dengan Seed Unik**:
+  ```tsx
+  src={`https://image.pollinations.ai/prompt/${encodeURIComponent(item.imageKeyword || 'indonesian food')}?width=600&height=400&nologo=true&seed=${index}`}
+  ```
+  Penambahan `&seed=${index}` (atau `&seed=${item.id}`) menjamin tidak ada dua kartu artikel yang menampilkan gambar kembar/duplikat.
+- **Sizing & Tampilan Visual**:
+  - Kontainer ber-radius (`rounded-2xl` / `rounded-[20px]`).
+  - Gambar berukuran `width: 100%; height: 200px; object-fit: cover;`.
+  - Dilengkapi skeleton loader krem hangat (`#EADDCC`/`#F8F5EF`) dan fallback anti-error.
 
-- **Tema Visual & Komponen**:
-  - Warna selaras dengan identitas Kawan Lokal: Latar belakang krem hangat (`#FFFDF8`, `#FAF7F2`), aksen terakota (`#E85D32`), dan cokelat rempah gelap (`#241A14`).
-  - Kartu bernuansa modern editorial dengan garis tepi halus (`border-[#D9C7AE]/60`), bayangan lembut (*soft shadows*), dan ikon badge search grounding Google.
-  - Skeleton loading berupa pulse gradient bertema krem keemasan yang nyaman dipandang.
+### B. Auto-Discovery & Auto-Inject Katalog Produk
+- **Backend Service (`/api/auto-discover-products` / `/api/trends`)**:
+  - Menggunakan model `gemini-2.5-flash` dengan `googleSearch` grounding aktif.
+  - JSON Schema ketat untuk produk baru:
+    - `id`: string unik (`ai-prod-${slug}-${timestamp}`)
+    - `name`: Nama produk menggugah selera (Bahasa Indonesia)
+    - `category`: Kategori relevan (bisa kategori baru yang belum pernah ada)
+    - `price`: Nilai Rupiah wajar (misal Rp 15.000 - Rp 35.000)
+    - `description`: Deskripsi rasa dan tekstur
+    - `badge`: `'✨ Baru & Viral'`
+    - `imagePrompt`: Prompt fotografi makanan profesional dalam Bahasa Inggris
+- **Foto Produk Baru Otomatis**:
+  ```tsx
+  src={`https://image.pollinations.ai/prompt/${encodeURIComponent(product.imagePrompt + ', high quality food photography, studio lighting')}?width=600&height=600&nologo=true&seed=${product.id}`}
+  ```
+- **Katalog & Filter Kategori Dinamis (`CategorySection.tsx` & `DiscoverPage.tsx`)**:
+  - Tab kategori tidak di-hardcode:
+    ```tsx
+    const categories = ['Semua', ...Array.from(new Set(products.map(p => p.category))).sort()];
+    ```
+  - Ketika kategori baru seperti `"Minuman Viral"`, `"Dessert Kekinian"`, atau `"Cemilan Pedas"` masuk, tab kategori langsung muncul sendiri di bar filter.
+  - Setiap tab menampilkan badge jumlah item (misal: `Semua (24)`, `Basreng Crispy (8)`, `Minuman Viral (3)`).
+- **Auto-Save & Injeksi Harian (`localStorage`)**:
+  - Menyimpan produk AI ke `localStorage` dengan key `kawanlokal_ai_products` dan `kawanlokal_products_date`.
+  - Jika tanggal hari ini berbeda atau data belum ada, jalankan fetch otomatis di background.
+  - Produk baru disuntikkan ke urutan teratas katalog dengan badge `'✨ Baru Ditambahkan Otomatis'`.
+  - Tampilkan toast: `✨ 3 Produk Viral Baru Berhasil Ditambahkan ke Katalog!`
 
 ---
 
-## 3. Key Product Decisions & Trade-Offs
+## 3. Rencana Modifikasi File
 
-- **Keputusan 1: Backend Server Route vs Client Direct Call**:
-  - *Pilihan*: Mengimplementasikan `server.ts` Express entry point yang mem-proxy permintaan `/api/trends`.
-  - *Alasan*: Menjaga kunci rahasia `GEMINI_API_KEY` tetap aman di lingkungan server dan memenuhi batasan arsitektur platform AI Studio.
-- **Keputusan 2: Strategi Caching 24 Jam di LocalStorage**:
-  - *Pilihan*: Menyimpan payload JSON + timestamp Unix di `localStorage`.
-  - *Alasan*: Pengunjung tidak mengalami jeda loading berulang saat berpindah-pindah halaman, menghemat kuota Google Search grounding, namun tetap memberikan kebebasan update manual melalui tombol refresh.
-- **Keputusan 3: Penanganan Fallback Data**:
-  - *Pilihan*: Menyediakan template fallback tren terkurasi jika terjadi gangguan jaringan atau pembatasan kuota internet pihak ketiga.
+1. **`src/types.ts`**:
+   - Perbarui antarmuka `TrendingArticle` untuk mendukung `imageKeyword` dan `image_keyword`.
+   - Perbarui antarmuka `Product` untuk mendukung `imagePrompt`, `isAiDiscovered?: boolean`, dan kategori dinamis.
+2. **`server.ts`**:
+   - Perbarui prompt AI dan skema Gemini untuk menghasilkan `imageKeyword` spesifik per artikel (Basreng, Thai Tea, Seblak, dll.).
+   - Tambahkan endpoint atau integrasikan auto-discovery produk baru dengan Google Search grounding dan `imagePrompt` detail.
+3. **`src/components/RealtimeTrendsSection.tsx`**:
+   - Pasang kontainer gambar `w-full h-[200px] object-cover rounded-2xl` dengan URL ber-seed unik `&seed=${index}`.
+   - Terapkan keyword spesifik untuk artikel bawaan/fallback.
+4. **`src/context/AiTrendsContext.tsx`**:
+   - Integrasikan state produk dinamis gabungan (`products = [...aiDiscoveredProducts, ...baseProducts]`).
+   - Logika auto-check tanggal kalender harian di `localStorage`.
+   - Handler manual refresh untuk katalog dan artikel.
+5. **`src/components/CategorySection.tsx` & `src/components/DiscoverPage.tsx`**:
+   - Ganti filter kategori statis menjadi dinamis dari `products.map(p => p.category)`.
+   - Tampilkan badge jumlah produk pada masing-masing tab kategori.
+   - Sediakan badge `'✨ Baru Ditambahkan Otomatis'` pada kartu produk baru.
 
 ---
 
-## 4. Technical Architecture & Data Strategy
+## 4. Rencana Pengujian & Verifikasi
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                       Client Browser                        │
-│                                                             │
-│  ┌───────────────────────┐       ┌───────────────────────┐  │
-│  │ RealtimeTrendsSection │       │  TrendingMenuSection  │  │
-│  │   (3 Artikel Viral)   │       │  (2-3 Rekomendasi AI) │  │
-│  └───────────┬───────────┘       └───────────┬───────────┘  │
-│              │                               │              │
-│              └───────────────┬───────────────┘              │
-│                              ▼                              │
-│                 ┌───────────────────────────┐               │
-│                 │      useAiTrends Hook     │               │
-│                 │   (Check Cache 24 Jam)    │               │
-│                 └─────────────┬─────────────┘               │
-│                               │ (Jika miss / refresh)       │
-└───────────────────────────────┼─────────────────────────────┘
-                                │ GET /api/trends
-                                ▼
-┌─────────────────────────────────────────────────────────────┐
-│                 Full-Stack Express Server                   │
-│                        (server.ts)                          │
-│                                                             │
-│   ┌─────────────────────────────────────────────────────┐   │
-│   │ Google Gen AI SDK (@google/genai)                   │   │
-│   │ Model: gemini-3.8-flash                             │   │
-│   │ Tool: { googleSearch: {} }                          │   │
-│   │ System Prompt: Kurator Kuliner Viral Indonesia      │   │
-│   │ Output: Structured JSON                             │   │
-│   └─────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-```
-
-- **Struktur Data JSON**:
-```typescript
-interface TrendingArticle {
-  judul: string;
-  ringkasan_singkat: string;
-  kategori: string;
-  waktu_baca: string;
-}
-
-interface NewMenuItem {
-  nama_menu: string;
-  deskripsi_menggugah_selera: string;
-  kategori: string;
-  estimasi_harga_rupiah: number;
-  alasan_populer: string;
-  badge?: '🔥 Trending' | '✨ Menu Baru';
-}
-
-interface AiTrendsResponse {
-  trending_articles: TrendingArticle[];
-  new_menus: NewMenuItem[];
-  last_updated: string;
-}
-```
+1. **Verifikasi Tampilan Artikel**:
+   - Pastikan ketiga kartu artikel memiliki gambar yang berbeda sesuai teks (Basreng daun jeruk, Thai tea/matcha, Seblak ceker).
+   - Pastikan tidak ada duplikasi berkat parameter `&seed=${index}`.
+   - Pastikan dimensi presisi `height: 200px; width: 100%; object-fit: cover; rounded-2xl`.
+2. **Verifikasi Auto-Discovery Katalog & Kategori Dinamis**:
+   - Buka katalog produk dan amati kemunculan produk baru hasil temuan AI di posisi teratas.
+   - Amati tab kategori: pastikan kategori baru muncul secara otomatis tanpa refresh ulang halaman.
+   - Klik tab kategori baru tersebut dan verifikasi penyaringan produk bekerja dengan benar.
+3. **Verifikasi Persistensi & Error Handling**:
+   - Cek `localStorage` di browser.
+   - Uji tombol `🔄 Cek Tren Baru Sekarang` dan pastikan toast notifikasi interaktif muncul.
+   - Uji build dengan `compile_applet` dan `lint_applet`.
