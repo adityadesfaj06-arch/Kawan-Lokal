@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { CartItem, Product, ProductVariant, PackageOption, OrderDetails } from '../types';
+import { CartItem, Product, ProductVariant, PackageOption, OrderDetails, NewMenuItem } from '../types';
 
 interface CartContextType {
   cart: CartItem[];
   addToCart: (product: Product, variant: ProductVariant, packageOption: PackageOption, quantity?: number) => void;
+  addNewMenuToCart: (menu: NewMenuItem) => void;
   removeFromCart: (cartItemId: string) => void;
   updateQuantity: (cartItemId: string, newQty: number) => void;
   clearCart: () => void;
@@ -145,6 +146,51 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     showToast(`Added to your cart ✓`);
   };
 
+  const addNewMenuToCart = (menu: NewMenuItem) => {
+    const cartItemId = `ai-trending__${menu.nama_menu.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+    const price = menu.estimasi_harga_rupiah || 25000;
+
+    let imageUrl = '/basreng-pedas-hero.jpg';
+    const catLower = (menu.kategori || '').toLowerCase();
+    const nameLower = (menu.nama_menu || '').toLowerCase();
+    if (catLower.includes('minuman') || nameLower.includes('tea') || nameLower.includes('boba') || nameLower.includes('matcha')) {
+      imageUrl = '/tea-powder-canister.jpg';
+    } else if (catLower.includes('seblak') || catLower.includes('cuanki') || nameLower.includes('kuah')) {
+      imageUrl = '/seblak-bowl-hero.jpg';
+    }
+
+    setCart((prev) => {
+      const idx = prev.findIndex((i) => i.cartItemId === cartItemId);
+      if (idx > -1) {
+        const next = [...prev];
+        next[idx].quantity += 1;
+        return next;
+      }
+      return [
+        ...prev,
+        {
+          cartItemId,
+          productId: cartItemId,
+          productSlug: 'discover',
+          productName: menu.nama_menu,
+          variantId: 'ai-trending-special',
+          variantName: menu.badge || '🔥 Trending',
+          packageOptionId: 'single-special',
+          packageName: '1 Porsi Rekomendasi AI',
+          packageMultiplier: 1,
+          unitPrice: price,
+          finalItemPrice: price,
+          quantity: 1,
+          image: imageUrl,
+        },
+      ];
+    });
+
+    triggerCartBounce();
+    showToast(`✓ "${menu.nama_menu}" berhasil dimasukkan ke keranjang!`);
+    setIsCartOpen(true);
+  };
+
   const removeFromCart = (cartItemId: string) => {
     setCart((prev) => prev.filter((item) => item.cartItemId !== cartItemId));
   };
@@ -171,6 +217,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         cart,
         addToCart,
+        addNewMenuToCart,
         removeFromCart,
         updateQuantity,
         clearCart,

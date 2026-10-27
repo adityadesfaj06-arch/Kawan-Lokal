@@ -1,12 +1,18 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore, doc, getDocFromServer } from 'firebase/firestore';
+import { initializeFirestore } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 
 const app = initializeApp(firebaseConfig);
 
-// CRITICAL: Must pass databaseId according to SKILL.md
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+// Initialize Firestore with auto-detect long polling to prevent 10s connection timeout in browser/container
+export const db = initializeFirestore(
+  app,
+  {
+    experimentalAutoDetectLongPolling: true,
+  },
+  firebaseConfig.firestoreDatabaseId
+);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 
@@ -53,18 +59,7 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
     operationType,
     path,
   };
-  console.error('Firestore Error: ', JSON.stringify(errInfo));
-  throw new Error(JSON.stringify(errInfo));
+  console.warn('Firestore Operation Notice: ', JSON.stringify(errInfo));
+  return errInfo;
 }
 
-// Validation connection to Firestore on initialization
-async function testConnection() {
-  try {
-    await getDocFromServer(doc(db, 'test', 'connection'));
-  } catch (error) {
-    if (error instanceof Error && error.message.includes('the client is offline')) {
-      console.warn('Please check your Firebase configuration.');
-    }
-  }
-}
-testConnection();

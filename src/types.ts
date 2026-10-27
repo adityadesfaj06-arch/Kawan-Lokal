@@ -168,3 +168,27 @@ export interface UserProfileData {
   updatedAt?: string;
 }
 
+export interface TrendingArticle {
+  judul: string;
+  ringkasan_singkat: string;
+  kategori: string;
+  waktu_baca: string;
+}
+
+export interface NewMenuItem {
+  nama_menu: string;
+  deskripsi_menggugah_selera: string;
+  kategori: string;
+  estimasi_harga_rupiah: number;
+  alasan_populer: string;
+  badge?: '🔥 Trending' | '✨ Menu Baru';
+}
+
+export interface AiTrendsData {
+  trending_articles: TrendingArticle[];
+  new_menus: NewMenuItem[];
+  grounded?: boolean;
+  last_updated: string;
+}
+
+

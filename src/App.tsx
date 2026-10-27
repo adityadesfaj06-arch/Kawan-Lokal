@@ -1,9 +1,12 @@
 import React from 'react';
 import { CartProvider, useCart } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
+import { AiTrendsProvider } from './context/AiTrendsContext';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { CategoryMarquee } from './components/CategoryMarquee';
+import { RealtimeTrendsSection } from './components/RealtimeTrendsSection';
+import { TrendingMenuSection } from './components/TrendingMenuSection';
 import { TrendingSection } from './components/TrendingSection';
 import { ReviewsSection } from './components/ReviewsSection';
 import { ArticlesSection } from './components/ArticlesSection';
@@ -52,6 +55,8 @@ const AppContent: React.FC = () => {
       <main>
         <Hero />
         <CategoryMarquee />
+        <RealtimeTrendsSection />
+        <TrendingMenuSection />
         <TrendingSection />
         <ReviewsSection />
         <ArticlesSection />
@@ -88,7 +93,9 @@ export default function App() {
   return (
     <AuthProvider>
       <CartProvider>
-        <AppContent />
+        <AiTrendsProvider>
+          <AppContent />
+        </AiTrendsProvider>
       </CartProvider>
     </AuthProvider>
   );

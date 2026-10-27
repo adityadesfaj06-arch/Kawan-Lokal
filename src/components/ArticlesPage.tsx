@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ARTICLES } from '../data/articles';
 import { useCart } from '../context/CartContext';
 import { Article } from '../types';
+import { RealtimeTrendsSection } from './RealtimeTrendsSection';
 
 export const ArticlesPage: React.FC = () => {
   const { navigate } = useCart();
@@ -98,6 +99,9 @@ export const ArticlesPage: React.FC = () => {
             ))}
           </div>
         </div>
+
+        {/* Real-Time AI Culinary Trends */}
+        <RealtimeTrendsSection />
 
         {/* Articles Grid */}
         {filteredArticles.length > 0 ? (

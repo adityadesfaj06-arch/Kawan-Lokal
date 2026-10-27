@@ -16,6 +16,7 @@ import { ProductCard } from './ProductCard';
 import { Product, ProductCategory } from '../types';
 import { formatRupiah } from '../lib/utils';
 import { useCart } from '../context/CartContext';
+import { TrendingMenuSection } from './TrendingMenuSection';
 
 export const DiscoverPage: React.FC = () => {
   const { currentPath, navigate, addToCart } = useCart();
@@ -190,6 +191,9 @@ export const DiscoverPage: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* Trending AI New Menu Showcase */}
+        <TrendingMenuSection />
 
         {/* Main Content: Sidebar Filters + Products Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
